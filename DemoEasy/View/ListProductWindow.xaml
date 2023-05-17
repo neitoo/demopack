@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DemoEasy.View"
         mc:Ignorable="d"
-        Title="Список товаров" Height="600" Width="1000" MinWidth="920" MinHeight="500">
+        Title="Список товаров" Height="600" Width="1000" MinWidth="920" MinHeight="500" Closing="Window_Closing">
     <Window.Resources>
         <BitmapImage x:Key="Loh" UriSource="/Resources/noimage.jpg"/>
     </Window.Resources>

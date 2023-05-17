@@ -11,5 +11,23 @@ namespace DemoEasy.Data
         public WinxEntities WinxEnt = new WinxEntities();
 
         public static DatabaseEntity DBEntity = new DatabaseEntity();
+
+        /// <summary>
+        /// Проверка подключения к базе данных.
+        /// </summary>
+        public static  DatabaseEntity connect
+        {
+            get
+            {
+                try
+                {
+                    return new DatabaseEntity();
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+        }
     }
 }

@@ -1,17 +1,8 @@
-﻿using System;
+﻿using DemoEasy.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using DemoEasy.Data;
 
 
 namespace DemoEasy.View
@@ -21,8 +12,18 @@ namespace DemoEasy.View
     /// </summary>
     public partial class ListProductWindow : Window
     {
+        /// <summary>
+        /// <param name="table">Список данных из БД</param>
+        /// </summary>
         List<FEECHKI_VINKS> table;
+        /// <summary>
+        /// <param name="_AllDataCount">Счетчик всех страниц</param>
+        /// </summary>
         private int _AllDataCount = 0;
+        /// <summary>
+        /// <param name="previousIndex">Сохранение предыдущего индекса в ComboBox</param>
+        /// </summary>
+        private int previousIndex = 0;
         public ListProductWindow()
         {
             InitializeComponent();
@@ -33,58 +34,94 @@ namespace DemoEasy.View
             countElem.Text = $"{table.Count} из {_AllDataCount}";
         }
 
+        /// <summary>
+        /// Метод кнопки фильтрации по возрастанию
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void upBtn_Click(object sender, RoutedEventArgs e)
         {
-            table = table.OrderBy(table => table.Price).ToList();
+            table = table.OrderBy(table => table.Price - (table.Price * table.Discount / 100)).ToList();
             ListProd.ItemsSource = table;
         }
 
+        /// <summary>
+        ///  Метод кнопки сброса фильтрации
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void resBtn_Click(object sender, RoutedEventArgs e)
         {
-            table = table.OrderBy(name => name.FullName).ToList();
-            ListProd.ItemsSource = table;
+            MessageBoxResult messageBoxResult = MessageBox.Show("Сбросить сортировку?", "Внимание", MessageBoxButton.YesNo);
+            if(messageBoxResult == MessageBoxResult.Yes)
+            {
+                table = table.OrderBy(name => name.FullName).ToList();
+                ListProd.ItemsSource = table;
+            }
 
         }
 
+        /// <summary>
+        /// Метод нажатия кнопки фильтрации по убыванию
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void downBtn_Click(object sender, RoutedEventArgs e)
         {
-            table = table.OrderByDescending(table => table.Price).ToList();
+            table = table.OrderByDescending(table => table.Price - (table.Price * table.Discount / 100)).ToList();
             ListProd.ItemsSource = table;
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (shtro.SelectedIndex)
+            int selectedIndex = shtro.SelectedIndex;
+
+            switch (selectedIndex)
             {
                 case 0:
                     {
                         table = DatabaseEntity.DBEntity.WinxEnt.FEECHKI_VINKS.OrderBy(name => name.FullName).ToList();
-                        ListProd.ItemsSource = table;
-                        countElem.Text = $"{table.Count} из {_AllDataCount}";
                         break;
                     }
                 case 1:
                     {
                         table = DatabaseEntity.DBEntity.WinxEnt.FEECHKI_VINKS.Where(name => name.Discount >= 0 && name.Discount < 10).OrderBy(name => name.Discount).ToList();
-                        ListProd.ItemsSource = table;
-                        countElem.Text = $"{table.Count} из {_AllDataCount}";
                         break;
                     }
                 case 2:
                     {
                         table = DatabaseEntity.DBEntity.WinxEnt.FEECHKI_VINKS.Where(name => name.Discount >= 10 && name.Discount < 15).OrderBy(name => name.Discount).ToList();
-                        ListProd.ItemsSource = table;
-                        countElem.Text = $"{table.Count} из {_AllDataCount}";
                         break;
                     }
                 case 3:
                     {
                         table = DatabaseEntity.DBEntity.WinxEnt.FEECHKI_VINKS.Where(name => name.Discount >= 15).OrderBy(name => name.Discount).ToList();
-                        ListProd.ItemsSource = table;
-                        countElem.Text = $"{table.Count} из {_AllDataCount}";
                         break;
                     }
             }
+
+
+            if(table.Count > 0)
+            {
+                ListProd.ItemsSource = table;
+                previousIndex = selectedIndex;
+                countElem.Text = $"{table.Count} из {_AllDataCount}";
+            }
+            else
+            {
+                MessageBox.Show("В данной категории нет данных.", "Предупреждение");
+                shtro.SelectedIndex = previousIndex;
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MessageBoxResult messageBoxResult = MessageBox.Show("Вы действительно хотите выйти?", "Подтверждение действия", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+            }
+            
         }
     }
 }
