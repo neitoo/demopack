@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Хранилище DemoStarsModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <!--Ошибки, обнаруженные при создании:
+предупреждение 6002: В таблице или представлении "DemoStars.dbo.ShopStars" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+  <EntityType Name="ShopStars">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="fullName" />
+      <PropertyRef Name="description" />
+      <PropertyRef Name="vendor" />
+      <PropertyRef Name="price" />
+      <PropertyRef Name="count" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fullName" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="70" Nullable="false" />
+    <Property Name="vendor" Type="varchar" MaxLength="30" Nullable="false" />
+    <Property Name="price" Type="float" Nullable="false" />
+    <Property Name="count" Type="int" Nullable="false" />
+    <Property Name="discount" Type="int" />
+  </EntityType>
+  <EntityContainer Name="Хранилище DemoStarsModelContainer">
+    <EntitySet Name="ShopStars" EntityType="Self.ShopStars" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [ShopStars].[id] AS [id], 
+    [ShopStars].[fullName] AS [fullName], 
+    [ShopStars].[description] AS [description], 
+    [ShopStars].[vendor] AS [vendor], 
+    [ShopStars].[price] AS [price], 
+    [ShopStars].[count] AS [count], 
+    [ShopStars].[discount] AS [discount]
+    FROM [dbo].[ShopStars] AS [ShopStars]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

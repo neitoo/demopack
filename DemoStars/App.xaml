@@ -1,0 +1,9 @@
+﻿<Application x:Class="DemoStars.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:DemoStars"
+             StartupUri="View/GoodsListWindow.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>
