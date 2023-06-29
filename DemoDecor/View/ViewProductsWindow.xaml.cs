@@ -26,13 +26,21 @@ namespace DemoDecor.View
         public ViewProductsWindow()
         {
             InitializeComponent();
+        }
 
-            table = DataEntity.entity.baseEntities.ProductTable.OrderBy(name => name.Category).ToList();
-
-            listDecor.ItemsSource = table;
-
-            allDataCount = table.Count;
-            countList.Text = $"{table.Count} из {allDataCount}";
+        private void LoadTable()
+        {
+            try
+            {
+                table = DataEntity.entity.baseEntities.ProductTable.OrderBy(name => name.Category).ToList();
+                allDataCount = table.Count;
+                countList.Text = $"{table.Count} из {allDataCount}";
+                listDecor.ItemsSource = table;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка загрузки данных из базы данных: " + ex.Message, "Ошибка");
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -70,35 +78,44 @@ namespace DemoDecor.View
         {
             int selectedIndex = categoryBox.SelectedIndex;
 
-            switch (selectedIndex)
+            if(table != null)
             {
-                case 0:
-                    table = DataEntity.entity.baseEntities.ProductTable.OrderBy(table => table.Category).ToList();
-                    break;
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                    ComboBoxItem item = (ComboBoxItem)categoryBox.SelectedItem;
-                    table = DataEntity.entity.baseEntities.ProductTable
-                        .Where(table => table.Category == item.Content.ToString())
-                        .OrderBy(table => table.Category)
-                        .ToList();
-                    break;
-            }
+                switch (selectedIndex)
+                {
+                    case 0:
+                        table = DataEntity.entity.baseEntities.ProductTable.OrderBy(table => table.Category).ToList();
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        ComboBoxItem item = (ComboBoxItem)categoryBox.SelectedItem;
+                        table = DataEntity.entity.baseEntities.ProductTable
+                            .Where(table => table.Category == item.Content.ToString())
+                            .OrderBy(table => table.Category)
+                            .ToList();
+                        break;
+                }
 
-            if(table.Count > 0)
-            {
-                listDecor.ItemsSource = table;
-                previousIndex = selectedIndex;
-                countList.Text = $"{table.Count} из {allDataCount}";
+                if (table.Count > 0)
+                {
+                    listDecor.ItemsSource = table;
+                    previousIndex = selectedIndex;
+                    countList.Text = $"{table.Count} из {allDataCount}";
+                }
+                else
+                {
+                    MessageBox.Show("В данной категории нет товаров.", "Предупреждение");
+                    categoryBox.SelectedItem = previousIndex;
+                }
             }
-            else
-            {
-                MessageBox.Show("В данной категории нет товаров.", "Предупреждение");
-                categoryBox.SelectedItem = previousIndex;
-            }
+            
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadTable();
         }
     }
 }
